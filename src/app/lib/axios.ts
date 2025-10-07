@@ -4,29 +4,22 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 
-// Axios instance
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-  withCredentials: true,
+  withCredentials: true, // IMPORTANT: sends cookies automatically
 });
 
-// Request interceptor
+// ✅ Request interceptor
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-    // Ensure headers object exists
     config.headers = config.headers ?? {};
-
-    const token = localStorage.getItem("access_token");
-    if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
-    }
-
+    // No need to manually attach Authorization if your backend reads it from cookies
     return config;
   },
-  (error: AxiosError) => Promise.reject(error)
+  (error) => Promise.reject(error)
 );
 
-// Response interceptor
+// ✅ Response interceptor: refresh token on 401
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
@@ -38,22 +31,19 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const refreshToken = localStorage.getItem("refresh_token");
-        const res = await axios.post<{ access_token: string }>(
+        // Call refresh token API (cookies sent automatically)
+        await axios.post(
           `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
-          { refresh_token: refreshToken }
+          {},
+          { withCredentials: true } // send refresh token cookie
         );
 
-        const newAccessToken = res.data.access_token;
-        localStorage.setItem("access_token", newAccessToken);
-
-        // Ensure headers exist
-        originalRequest.headers = originalRequest.headers ?? {};
-        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-
+        // Retry the original request
         return api(originalRequest);
       } catch (refreshError) {
         console.error("Token refresh failed:", refreshError);
+        // Optional: redirect to login
+        // if (typeof window !== "undefined") window.location.href = "/login";
         return Promise.reject(refreshError);
       }
     }
