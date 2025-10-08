@@ -3,6 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import { protectedRoutes } from "./withAuth";
+import Unauthorized from "../components/Unauthorized/Unauthorized";
 
 interface Props {
   children: ReactNode;
@@ -11,33 +12,35 @@ interface Props {
 export default function ProtectedWrapper({ children }: Props) {
   const pathname = usePathname();
   const router = useRouter();
-  const [isChecking, setIsChecking] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
 
   useEffect(() => {
     const checkAuth = () => {
-      // Only check auth for protected routes
       if (!protectedRoutes.includes(pathname)) {
-        setIsChecking(false);
+        setIsAuthorized(true); // no need to check auth for public routes
         return;
       }
 
-      // Check if access_token cookie exists
       const hasAccessToken = document.cookie
         .split("; ")
         .some((row) => row.startsWith("access_token="));
 
       if (!hasAccessToken) {
-        router.replace("/login");
+        setIsAuthorized(false);
       } else {
-        setIsChecking(false);
+        setIsAuthorized(true);
       }
     };
 
     checkAuth();
-  }, [pathname, router]);
+  }, [pathname]);
 
-  // Show nothing until auth check completes
-  if (isChecking) return null;
+  // While checking, show nothing or a loader if you want
+  if (isAuthorized === null) return null;
 
+  // If unauthorized, show the Unauthorized component
+  if (!isAuthorized) return <Unauthorized />;
+
+  // Otherwise, show the children
   return <>{children}</>;
 }
