@@ -10,11 +10,7 @@ const Unauthorized: React.FC = () => {
   const router = useRouter();
 
   const handleGoLogin = () => {
-    router.replace("/login");
-  };
-
-  const handleGoHome = () => {
-    router.push("/");
+    router.replace("/");
   };
 
   return (
@@ -27,9 +23,6 @@ const Unauthorized: React.FC = () => {
         extra={[
           <Button type="primary" key="login" onClick={handleGoLogin}>
             Go to Login
-          </Button>,
-          <Button key="home" onClick={handleGoHome}>
-            Back to Home
           </Button>,
         ]}
         className="unauthorized-result"
