@@ -4,6 +4,7 @@ import "./globals.css";
 import { ReactNode } from "react";
 import ProtectedWrapper from "./hoc/ProtectedWrapper";
 import ThemeProvider from "./Providers/ThemeProvider";
+import StoreProvider from "./Providers/StoreProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,9 +30,11 @@ export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <ThemeProvider>
-          <ProtectedWrapper>{children}</ProtectedWrapper>
-        </ThemeProvider>
+        <StoreProvider>
+          <ThemeProvider>
+            <ProtectedWrapper>{children}</ProtectedWrapper>
+          </ThemeProvider>
+        </StoreProvider>
       </body>
     </html>
   );
