@@ -1,0 +1,12 @@
+.alert-overlay {
+    position: fixed;
+    top: 60px; /* a little down from the top */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999; /* ensure it stays above all elements */
+    width: fit-content;
+    min-width: 300px;
+    max-width: 90vw;
+    transition: opacity 0.3s ease;
+  }
+  
