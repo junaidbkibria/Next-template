@@ -3,6 +3,7 @@ import styles from "./page.module.css";
 import { Button } from "antd";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { decrement, increment } from "./store/slices/counterSlice";
+import CustomAlert from "./components/CustomAlert/CustomAlert";
 
 export default function Home() {
   const count = useAppSelector((state) => state.counter.value);
@@ -23,6 +24,8 @@ export default function Home() {
       <Button type="primary" onClick={() => dispatch(decrement())}>
         Decrease
       </Button>
+
+      <CustomAlert message="error" />
     </div>
   );
 }
