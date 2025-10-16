@@ -12,7 +12,6 @@ interface RegisterFormInputs {
   confirmPassword: string;
 }
 
-// ✅ Validation schema
 const schema = Yup.object({
   name: Yup.string()
     .required("Name is required")
@@ -44,15 +43,13 @@ export default function RegisterForm() {
     },
   });
 
-  // ✅ Submit handler
   const onSubmit = async (data: RegisterFormInputs) => {
     console.log("Form submitted:", data);
 
-    // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     alert("✅ User registered successfully!");
-    reset(); // clear form
+    reset();
   };
 
   return (
