@@ -5,6 +5,7 @@ import { ReactNode } from "react";
 import ProtectedWrapper from "./hoc/ProtectedWrapper";
 import ThemeProvider from "./Providers/ThemeProvider";
 import StoreProvider from "./Providers/StoreProvider";
+import "../app/i18n";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
